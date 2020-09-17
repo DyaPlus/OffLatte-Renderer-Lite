@@ -2,20 +2,32 @@
 #include "ray.h"
 #include "render_output.h"
 
-bool hit_sphere(const point3& center, const double radius, const ray& r) {
+double hit_sphere(const point3& center, const double radius, const ray& r) {
     vec3 oc = r.origin() - center;
     auto a = dot(r.direction(), r.direction());
     auto b = 2.0 * dot(oc, r.direction());
     auto c = dot(oc, oc) - radius * radius;
     auto discriminant = b * b - 4 * a * c;
-    return (discriminant > 0); //Positive root means the ray intersectrs the sphere
+    if (discriminant < 0) {
+        return -1.0;
+    }
+    else {
+        return (-b - sqrt(discriminant)) / (2.0 * a); //First intersection of sphere and ray
+    }
 }
 
 color ray_gradient_color(const ray& r) {
-    if (hit_sphere({ 0,0,-1 }, 0.5, r))
-        return color(1.0,0,0);
+    vec3 sphere_o(0, 0, -1);
+    auto t = hit_sphere(sphere_o, 0.5, r);
+    if (t >= 0)
+    {
+        auto n = unit_vector(r.at(t) - sphere_o);
+        //Normal Map Rendering
+        return 0.5 * color(n.x + 1, n.y + 1, n.z + 1);
+    }
+
     vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5 * (unit_direction.y + 1.0);
+    t = 0.5 * (unit_direction.y + 1.0);
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
