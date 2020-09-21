@@ -7,7 +7,8 @@
 class sphere : public hittable {
 public:
     sphere() {}
-    sphere(point3 cen, double r) : center(cen), radius(r) {};
+    sphere(point3 cen, double r, std::shared_ptr<material> m)
+        : center(cen), radius(r), mat_ptr(m) {};
 
     virtual bool hit(
         const ray& r, double tmin, double tmax, hit_record& rec) const override;
@@ -15,6 +16,7 @@ public:
 public:
     point3 center;
     double radius;
+    std::shared_ptr<material> mat_ptr;
 };
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
@@ -26,6 +28,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
     if (discriminant > 0) {
         auto root = sqrt(discriminant);
+        rec.mat_ptr = mat_ptr;
 
         auto temp = (-half_b - root) / a; //First intersection
         if (temp < t_max && temp > t_min) {

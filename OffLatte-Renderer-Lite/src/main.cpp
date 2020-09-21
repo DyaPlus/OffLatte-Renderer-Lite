@@ -30,7 +30,7 @@ color ray_color(const ray& r, const hittable& world, int depth) {
     }
     if (world.hit(r, 0.001, infinity, rec)) {
         //return 0.5 * (rec.normal + color(1, 1, 1)); Return Normal Color
-        point3 target = rec.p + rec.normal + random_in_unit_sphere(); // A random point s in unit sphere at p
+        point3 target = rec.p + random_in_hemisphere(rec.normal); // A random point s in unit sphere at p
         return 0.5 * ray_color(ray(rec.p, target - rec.p), world, depth - 1); // Shoot new ray at random location
     }
 

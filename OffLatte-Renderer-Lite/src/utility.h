@@ -28,7 +28,7 @@ inline double random_double() {
 
 inline double random_double(double min, double max) {
     // Returns a random real in [min,max).
-    static std::uniform_real_distribution<double> distribution(min, max);
+    std::uniform_real_distribution<double> distribution(min, max);
     static std::mt19937 generator;
     return distribution(generator);
 
@@ -39,6 +39,7 @@ inline double clamp(double x, double min, double max) {
     if (x > max) return max;
     return x;
 }
+
 
 // Common Headers
 
